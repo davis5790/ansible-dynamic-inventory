@@ -1,0 +1,35 @@
+---
+- name: Web Server Setup
+  hosts: tag_aws_autoscaling_groupName_Web_Server
+  become: yes
+  vars:
+    ansible_ssh_private_key_file: "/home/ubuntu/web-key.pem"
+  tasks:
+    - name: Update Cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: latest
+
+    - name: Start & Enable Apache2
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Copy index.html to web server
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/index.html
+      notify:
+        - restart-apache
+
+  handlers:
+    - name: restart-apache
+      service:
+        name: apache2
+        state: restarted
