@@ -1,4 +1,5 @@
 ---
+## in /home/ubuntu
 - name: Web Server Setup
   hosts: tag_aws_autoscaling_groupName_Web_Server
   become: yes
